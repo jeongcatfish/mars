@@ -2,8 +2,7 @@
 
 class track{
 
-// Depth image
-PImage depthImg;
+
 
 // Which pixels do we care about?
 
@@ -11,15 +10,6 @@ int forX=0;
 
 // What is the kinect's angle
 
-float avgX=0;
-float avgY=0;
-
-  track()
-  {
-    PImage depthImg;
-    
-  depthImg = new PImage(kinect.width, kinect.height);
-  }
 
   void track_start()
   {
@@ -50,23 +40,23 @@ float avgY=0;
   
   // Draw the thresholded image
   depthImg.updatePixels();
-  //image(depthImg, 0, 0);
+  image(depthImg, 0, 0);
  
   avgX = sumX / total;
   avgY = sumY / total;
   fill(255,0,0);
   //ellipse(avgX,avgY,54,54);
-  ellipse(mappingX(avgX),mappingY(avgY),54,54);
+  ellipse(mappingX(avgX),mappingY(avgY),75,75);
   }
   
 float mappingX(float x)
 {
-  float nx = map(x,0,kinect.width,0,1920);
+  float nx = map(x,130,540,190,840);
   return nx;
 }
 float mappingY(float y)
 {
-  float ny = map(y,0,kinect.height,0,1080);
+  float ny = map(y,0,370,65,680);
   return ny;
 }
 }

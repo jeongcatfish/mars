@@ -6,13 +6,19 @@ import processing.video.*;
 import ddf.minim.*;
 PImage img;
 PImage mask;
+int mx,my;
+float avgX=0;
+float avgY=0;
+
 float transparency = 255;
 //PImage depthImg;
 //int skip=120;
 int skip=80;
 float angle;
 int minDepth =  60;
-int maxDepth = 650;
+int maxDepth =  945;
+// Depth image
+PImage depthImg;
 /*
 PImage kinect2_img;
 Kinect2 kinect2;
@@ -20,30 +26,25 @@ kinect2_img = createImage(kinect2.depthWidth,kinect2.depthHeight,RGB);
 */
 Kinect kinect;
 pick[] pick = new pick[5];
+track tracking = new track();
 //track tracking = new track();
 
 void setup()
 {
- size(1024, 768); //1024x768
+ //size(1024, 768); //1024x768
 //  
-/*
+
   fullScreen();
   surface.setResizable(true);
   surface.setSize(1024,768);
   surface.setLocation(1921,0);
-*/
   //background(255);
   pick[0] = new pick(255,0,0); //red
   pick[1] = new pick(255,255,255); //white
   pick[2] = new pick(255,255,0);  //yellow
   pick[3] = new pick(0,0,255);    //blue
   pick[4] = new pick(0,255,255);  //sky
-/*  //red, white, yellow, blue, sky
-  kinect2= new Kinect2(this);
-  kinect2.initDevice();
-  kinect2.initDepth();
-  */
-  
+
   img = loadImage("mars10241024.png");
   mask = loadImage("mask.png");
   //background(0);
@@ -53,6 +54,8 @@ void setup()
     kinect.initDepth();
     angle = kinect.getTilt();
     // Blank image
+    
+depthImg = new PImage(kinect.width, kinect.height);
 }
 
 void draw()
@@ -60,8 +63,8 @@ void draw()
   background(0);
   //image(img, 360, 0, 1200, height);  // img --> mars2.jpg or png not sure..
   //noTint();
-  human(); // It will be kinect depthdata 
-  //tracking.track_start();
+  //human(); // It will be kinect depthdata 
+  tracking.track_start();
   for(int i=0;i<1;i++)
   {
     pick[i].getcolor(); //get pixel color of every single point.
@@ -73,12 +76,15 @@ void draw()
     pick[i].print_footprint(); // print foot when the pixel is changed.
     //pick[i].pre_footprint_left();
   }
-  draw_rect();
+  //draw_rect();
   //check_detect_area();
   fill(0);
   rect(0,0,130,160);
   noTint();
   image(mask,0,0);
+  //tracking.track_start();
+  fill(255,255,255);
+  text("x : " +mouseX + " y : "+mouseY , 10,100);
 }
 
 void human()
@@ -104,7 +110,7 @@ void draw_rect()
     for (int x=((width-img.width)/2); x<width-(width-img.width)/2; x=x+skip)
     {
       stroke(0);
-      fill(255, 255, 255,1);
+      fill(255, 255, 0,1);
       rect(x, y, skip, skip);
     }
   }
@@ -121,6 +127,11 @@ void check_detect_area()
       ellipse(x, y, 15, 15);
     }
   }
+}
+
+void mousePressed()
+{
+  print("x : " +mouseX + " y : "+mouseY);
 }
 /*f
 void depthimage()

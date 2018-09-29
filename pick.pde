@@ -22,7 +22,7 @@ class pick{
   float pre_leftX,pre_leftY;;
   float pre_rightX,pre_rightY;
   float pre_footX,pre_footY;
-  int speed=8;
+  int speed=5;
   int life = 255;
   
   ArrayList<FootPrint> footprints;
