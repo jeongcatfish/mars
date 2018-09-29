@@ -1,31 +1,39 @@
+int state_of=0;
+boolean state=false; //to pop the foot print. left or right.
+
 class pick{
   int x_getcolor,y_getcolor;
   int preA=-1, preB=-1;
   int preX=-1,preY=-1;
-  int foot_positionX=0,foot_positionY=0;
+  float foot_positionX=0,foot_positionY=0;
   int a_getcolor=0, b_getcolor=0;
-  int state_of=0;
+  
   color target;
   int loc;
   PImage right, left;
-  boolean state=false; //to pop the foot print. left or right.
+  
   int onceL=0;
   int onecR=0;
   int apL=255;
   int apR=255;
-  int pre_apL=255;
-  int pre_apR=255;
+  //int pre_apL=255;
+  //int pre_apR=255;
   boolean yes = true;
-  int pre_leftX,pre_leftY;;
-  int pre_rightX,pre_rightY;
-  int pre_footX,pre_footY;
+  float pre_leftX,pre_leftY;;
+  float pre_rightX,pre_rightY;
+  float pre_footX,pre_footY;
   int speed=8;
+  int life = 255;
+  
+  ArrayList<FootPrint> footprints;
+  
   pick(int r, int g, int b)
   {
     target = color(r, g, b);
     right = loadImage("right2.png");
     left = loadImage("left2.png");
     //image(right,-100,-100);
+    footprints = new ArrayList<FootPrint>(); 
     print("intit _ pick");
   }
   
@@ -100,201 +108,250 @@ class pick{
   
 void print_footprint()
 {
-  if(state == true) //left
+  int count=0;
+  
+  if(state == true)
   {
-    apR=255;
-    //image(left, foot_positionX+15, foot_positionY, left.width, left.height);
-    if(state_of == 0){
-      left(foot_positionX, foot_positionY); 
-    }
-    else if(state_of==1) left315(foot_positionX, foot_positionY);
-    else if(state_of==2) left(foot_positionX, foot_positionY);
-    else if(state_of==3) left45(foot_positionX, foot_positionY);
-    else if(state_of==4) left270(foot_positionX, foot_positionY);
-    else if(state_of==5) left90(foot_positionX, foot_positionY);
-    else if(state_of==6) left225(foot_positionX, foot_positionY);
-    else if(state_of==7) left180(foot_positionX, foot_positionY);
-    else if(state_of==8) left135(foot_positionX, foot_positionY);
-   
-   
+     footprints.add(new FootPrint(foot_positionX,foot_positionY));
   }
-  else if(state == false) //right
-  { 
-    apL=255;
-    //image(right, foot_positionX+15, foot_positionY, right.width, right.height);
-    if(state_of == 0){
-      right(foot_positionX, foot_positionY);
+  else if(state ==false)
+  {
+    footprints.add(new FootPrint(foot_positionX,foot_positionY));
+  }
+  
+  
+  
+  for(int i=0; i< footprints.size(); i++)
+  {
+    FootPrint footprint = footprints.get(i);
+    footprint.display();
+    
+    if(footprint.finished()){
+      footprints.remove(i);
     }
-    else if(state_of==1) right315(foot_positionX, foot_positionY);
-    else if(state_of==2) right(foot_positionX, foot_positionY);
-    else if(state_of==3) right45(foot_positionX, foot_positionY);
-    else if(state_of==4) right270(foot_positionX, foot_positionY);
-    else if(state_of==5) right90(foot_positionX, foot_positionY);
-    else if(state_of==6) right225(foot_positionX, foot_positionY);
-    else if(state_of==7) right180(foot_positionX, foot_positionY);
-    else if(state_of==8) right135(foot_positionX, foot_positionY);
-    
-    
   }
 }
+ 
 
+}
 
-  void left(int foot_positionX, int foot_positionY)
+class FootPrint{
+  
+  PImage right, left;
+  float x;
+  float y;
+  float life = 255;
+  float speed = 25;
+  
+  FootPrint(float tempX, float tempY) {
+    right = loadImage("right2.png");
+    left = loadImage("left2.png");
+    x = tempX;
+    y = tempY;
+  }
+  
+  void display() {
+    
+    boolean count= true;
+    
+      //left(x,y);
+     if(count == true)
+     {
+       if(state_of == 0)  left(x, y); 
+       else if(state_of==1) left315(x, y);
+       else if(state_of==2) left(x, y);
+       else if(state_of==3) left45(x, y);
+       else if(state_of==4) left270(x, y);
+       else if(state_of==5) left90(x, y);
+       else if(state_of==6) left225(x, y);
+       else if(state_of==7) left180(x, y);
+       else if(state_of==8) left135(x, y);
+       count = false;
+     }
+    
+    else if(count == false)
+    {
+      if(state_of == 0)  left(x, y); 
+      else if(state_of==1) right315(x, y);
+      else if(state_of==2) right(x, y);
+      else if(state_of==3) right45(x, y);
+      else if(state_of==4) right270(x, y);
+      else if(state_of==5) right90(x, y);
+      else if(state_of==6) right225(x, y);
+      else if(state_of==7) right180(x, y);
+      else if(state_of==8) right135(x, y);
+      count = true;
+    }
+    
+  }
+  
+  boolean finished(){
+    life--;
+    if (life < 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  void left(float foot_positionX, float foot_positionY)
   {
-    if(apL > 0) apL-=speed;
-    tint(255,apL);
+    if(life > 0) life-=speed;
+    tint(255,life);
     image(left, foot_positionX, foot_positionY, left.width, left.height);
   }
   
-  void right(int foot_positionX, int foot_positionY)
+  void right(float foot_positionX, float foot_positionY)
   {
-    if(apR > 0) apR-=speed;
-    tint(255,apR);
+    if(life > 0) life-=speed;
+    tint(255,life);
     image(right, foot_positionX, foot_positionY, right.width, right.height);
   }
   
-  void left45(int foot_positionX, int foot_positionY) // NE
+  void left45(float foot_positionX, float foot_positionY) // NE
   {
       pushMatrix();
       translate(foot_positionX-35,foot_positionY); // Have to find the 
       rotate(radians(45));
-      if(apL > 0) apL-=speed;
-    tint(255,apL);
+      if(life > 0) life-=speed;
+    tint(255,life);
       image(left, 0, 0, left.width, left.height);
       popMatrix();
   }
-  void left90(int foot_positionX, int foot_positionY) // E
+  void left90(float foot_positionX, float foot_positionY) // E
   {
       pushMatrix();
       translate(foot_positionX,foot_positionY-15); // Have to find the 
       rotate(radians(90));
-      if(apL > 0) apL-=speed;
-    tint(255,apL);
+      if(life > 0) life-=speed;
+    tint(255,life);
       image(left, 0, 0, left.width, left.height);
       popMatrix();
   }
-  void left135(int foot_positionX, int foot_positionY) // ES
+  void left135(float foot_positionX, float foot_positionY) // ES
   {
       pushMatrix();
       translate(foot_positionX-35,foot_positionY); // Have to find the 
       rotate(radians(135));
-      if(apL > 0) apL-=speed;
-    tint(255,apL);
+      if(life > 0) life-=speed;
+    tint(255,life);
       image(left, 0, 0, left.width, left.height);
       popMatrix();
   }
-  void left180(int foot_positionX, int foot_positionY) //S
+  void left180(float foot_positionX, float foot_positionY) //S
   {
       pushMatrix();
       translate(foot_positionX,foot_positionY); // Have to find the 
       rotate(radians(180));
-      if(apL > 0) apL-=speed;
-    tint(255,apL);
+      if(life > 0) life-=speed;
+    tint(255,life);
       image(left, 0, 0, left.width, left.height);
       popMatrix();
   }
   
-  void left225(int foot_positionX, int foot_positionY) // WS
+  void left225(float foot_positionX, float foot_positionY) // WS
   {
       pushMatrix();
       translate(foot_positionX-35,foot_positionY); // Have to find the 
       rotate(radians(225));
-      if(apL > 0) apL-=speed;
-    tint(255,apL);
+      if(life > 0) life-=speed;
+    tint(255,life);
       image(left, 0, 0, left.width, left.height);
       popMatrix();
   }
-  void left270(int foot_positionX, int foot_positionY) // W
+  void left270(float foot_positionX, float foot_positionY) // W
   {
       pushMatrix();
       translate(foot_positionX,foot_positionY-15); // Have to find the 
       rotate(radians(270));
-      if(apL > 0) apL-=speed;
-    tint(255,apL);
+      if(life > 0) life-=speed;
+    tint(255,life);
       image(left, 0, 0, left.width, left.height);
       popMatrix();
   }
-  void left315(int foot_positionX, int foot_positionY) // NW
+  void left315(float foot_positionX, float foot_positionY) // NW
   {
       pushMatrix();
       translate(foot_positionX-35,foot_positionY); // Have to find the 
       rotate(radians(315));
-      if(apL > 0) apL-=speed;
-    tint(255,apL);
+      if(life > 0) life-=speed;
+    tint(255,life);
       image(left, 0, 0, left.width, left.height);
       popMatrix();
   }
   
   
-  void right45(int foot_positionX, int foot_positionY) // NE
+  void right45(float foot_positionX, float foot_positionY) // NE
   {
       pushMatrix();
       translate(foot_positionX-35,foot_positionY); // Have to find the 
       rotate(radians(45));
-      if(apR > 0) apR-=speed;
-    tint(255,apR);
+      if(life > 0) life-=speed;
+    tint(255,life);
       image(right, 0, 0, right.width, right.height);
       popMatrix();
   }
-  void right90(int foot_positionX, int foot_positionY) // E
+  void right90(float foot_positionX, float foot_positionY) // E
   {
       pushMatrix();
       translate(foot_positionX,foot_positionY+15); // Have to find the 
       rotate(radians(90));
-      if(apR > 0) apR-=speed;
-    tint(255,apR);
+      if(life > 0) life-=speed;
+    tint(255,life);
       image(right, 0, 0, right.width, right.height);
       popMatrix();
   }
-  void right135(int foot_positionX, int foot_positionY) // ES
+  void right135(float foot_positionX, float foot_positionY) // ES
   {
       pushMatrix();
       translate(foot_positionX-35,foot_positionY); // Have to find the 
       rotate(radians(135));
-      if(apR > 0) apR-=speed;
-    tint(255,apR);
+      if(life > 0) life-=speed;
+    tint(255,life);
       image(right, 0, 0, right.width, right.height);
       popMatrix();
   }
-  void right180(int foot_positionX, int foot_positionY) //S
+  void right180(float foot_positionX, float foot_positionY) //S
   {
       pushMatrix();
       translate(foot_positionX,foot_positionY); // Have to find the 
       rotate(radians(180));
-      if(apR > 0) apR-=speed;
-    tint(255,apR);
+      if(life > 0) life-=speed;
+    tint(255,life);
       image(right, 0, 0, right.width, right.height);
       popMatrix();
   }
   
-  void right225(int foot_positionX, int foot_positionY) // WS
+  void right225(float foot_positionX, float foot_positionY) // WS
   {
       pushMatrix();
       translate(foot_positionX-35,foot_positionY); // Have to find the 
       rotate(radians(225));
-      if(apR > 0) apR-=speed;
-    tint(255,apR);
+      if(life > 0) life-=speed;
+    tint(255,life);
       image(right, 0, 0, right.width, right.height);
       popMatrix();
   }
-  void right270(int foot_positionX, int foot_positionY) // W
+  void right270(float foot_positionX, float foot_positionY) // W
   {
       pushMatrix();
       translate(foot_positionX-35,foot_positionY); // Have to find the 
       rotate(radians(270));
-      if(apR > 0) apR-=speed;
-    tint(255,apR);
+      if(life > 0) life-=speed;
+    tint(255,life);
       image(right, 0, 0, right.width, right.height);
       popMatrix();
   }
-  void right315(int foot_positionX, int foot_positionY) // NW
+  void right315(float foot_positionX, float foot_positionY) // NW
   {
       pushMatrix();
       translate(foot_positionX-35,foot_positionY); // Have to find the 
       rotate(radians(315));
-      if(apR > 0) apR-=speed;
-    tint(255,apR);
+      if(life > 0) life-=speed;
+    tint(255,life);
       image(right, 0, 0, right.width, right.height);
       popMatrix();
   }
+  
+  
 }
