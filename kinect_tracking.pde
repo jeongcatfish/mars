@@ -13,6 +13,7 @@ int forX=0;
 
   void track_start()
   {
+    println("track_start : start");
     int[] rawDepth = kinect.getRawDepth();
 
     float sumX=0,sumY=0;
@@ -46,7 +47,7 @@ int forX=0;
   avgY = sumY / total;
   fill(255,0,0);
   //ellipse(avgX,avgY,54,54);
-  ellipse(mappingX(avgX),mappingY(avgY),75,75);
+  ellipse(mappingX(avgX),mappingY(avgY),skip+7,skip+7);
   }
   
 float mappingX(float x)
